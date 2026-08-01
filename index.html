@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Photoset Gallery</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#111;
+    color:white;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+/* ===========================
+HEADER
+=========================== */
+
+header{
+
+    position:sticky;
+    top:0;
+
+    background:#1b1b1b;
+
+    padding:15px;
+
+    border-bottom:1px solid #333;
+
+    z-index:100;
+
+}
+
+header h1{
+
+    text-align:center;
+
+    font-size:26px;
+
+}
+
+#search{
+
+    width:100%;
+
+    margin-top:15px;
+
+    padding:12px;
+
+    font-size:16px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#222;
+
+    color:white;
+
+    outline:none;
+
+}
+
+/* ===========================
+STATS
+=========================== */
+
+#stats{
+
+    text-align:center;
+
+    color:#aaa;
+
+    padding:15px;
+
+}
+
+/* ===========================
+GALLERY
+=========================== */
+
+#gallery{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fill,minmax(220px,1fr));
+
+    gap:18px;
+
+    padding:20px;
+
+}
+
+.card{
+
+    background:#1d1d1d;
+
+    border-radius:12px;
+
+    overflow:hidden;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-4px);
+
+}
+
+.card img{
+
+    width:100%;
+
+    height:280px;
+
+    object-fit:cover;
+
+    display:block;
+
+}
+
+.cardInfo{
+
+    padding:12px;
+
+}
+
+.cardTitle{
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    margin-bottom:8px;
+
+}
+
+.cardCount{
+
+    color:#999;
+
+    font-size:14px;
+
+}
+
+/* ===========================
+VIEWER
+=========================== */
+
+#viewer{
+
+    display:none;
+
+    padding:20px;
+
+}
+
+#backButton{
+
+    background:#222;
+
+    color:white;
+
+    border:none;
+
+    padding:12px 18px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    margin-bottom:20px;
+
+}
+
+#viewerTitle{
+
+    margin-bottom:20px;
+
+}
+
+#imageGrid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fill,minmax(180px,1fr));
+
+    gap:15px;
+
+}
+
+#imageGrid img{
+
+    width:100%;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    display:block;
+
+}
+
+/* ===========================
+FULLSCREEN
+=========================== */
+
+#fullscreen{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.95);
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:999;
+
+}
+
+#fullscreen img{
+
+    max-width:95vw;
+
+    max-height:95vh;
+
+    object-fit:contain;
+
+}
+
+#close{
+
+    position:absolute;
+
+    top:20px;
+
+    right:20px;
+
+    width:45px;
+
+    height:45px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#333;
+
+    color:white;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+}
+
+#prev,#next{
+
+    position:absolute;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    font-size:40px;
+
+    cursor:pointer;
+
+    user-select:none;
+
+    padding:20px;
+
+}
+
+#prev{
+
+    left:10px;
+
+}
+
+#next{
+
+    right:10px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>📷 Photoset Gallery</h1>
+
+<input
+id="search"
+type="text"
+placeholder="Search photosets...">
+
+</header>
+
+<div id="stats"></div>
+
+<div id="gallery"></div>
+
+<div id="viewer">
+
+<button id="backButton">
+
+← Back
+
+</button>
+
+<h2 id="viewerTitle"></h2>
+
+<div id="imageGrid"></div>
+
+</div>
+
+<div id="fullscreen">
+
+<button id="close">✕</button>
+
+<div id="prev">❮</div>
+
+<img id="fullscreenImage">
+
+<div id="next">❯</div>
+
+</div>
+
+<script>
+
+/* ===========================
+GLOBAL VARIABLES
+=========================== */
+
+let photosets=[];
+
+let filtered=[];
+
+let currentSet=null;
+
+let currentImageIndex=0;
+
+let scrollPosition=0;
+
+/* ===========================
+ELEMENTS
+=========================== */
+
+const gallery=
+document.getElementById("gallery");
+
+const viewer=
+document.getElementById("viewer");
+
+const imageGrid=
+document.getElementById("imageGrid");
+
+const viewerTitle=
+document.getElementById("viewerTitle");
+
+const stats=
+document.getElementById("stats");
+
+const search=
+document.getElementById("search");
+
+const fullscreen=
+document.getElementById("fullscreen");
+
+const fullscreenImage=
+document.getElementById("fullscreenImage");
+
+/* ===========================
+LOAD JSON
+=========================== */
+
+async function loadPhotosets(){
+
+    const response=
+    await fetch("photosets.json");
+
+    photosets=
+    await response.json();
+
+    filtered=[...photosets];
+
+    renderGallery();
+
+}
+
+loadPhotosets();
+
+</script>
+
+</body>
+</html>
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    background:#111;
+    color:white;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+header{
+    padding:15px;
+    text-align:center;
+    background:#1b1b1b;
+}
+
+#toolbar{
+    display:flex;
+    gap:10px;
+    padding:15px;
+    justify-content:center;
+    flex-wrap:wrap;
+}
+
+input{
+    background:#222;
+    color:white;
+    border:none;
+    padding:10px;
+    border-radius:8px;
+}
+
+button{
+    padding:10px 16px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#333;
+    color:white;
+}
+
+button:hover{
+    background:#555;
+}
+
+#gallery{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:18px;
+    padding:20px;
+}
+
+.card{
+    background:#1b1b1b;
+    border-radius:12px;
+    overflow:hidden;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.card:hover{
+    transform:translateY(-4px);
+}
+
+.card img{
+    width:100%;
+    aspect-ratio:3/4;
+    object-fit:cover;
+}
+
+.cardTitle{
+    padding:10px;
+    text-align:center;
+    font-size:14px;
+}
+
+#viewer{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:#000;
+    z-index:99;
+}
+
+#viewerTop{
+    display:flex;
+    justify-content:space-between;
+    padding:15px;
+    background:#111;
+}
+
+#viewerTitle{
+    font-size:18px;
+}
+
+#counter{
+    color:#bbb;
+}
+
+#imageContainer{
+    position:relative;
+    height:calc(100vh - 70px);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:auto;
+}
+
+#mainImage{
+    max-width:100%;
+    max-height:100%;
+}
+
+#prev,#next{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    width:55px;
+    height:55px;
+    border-radius:50%;
+    font-size:24px;
+    background:rgba(0,0,0,.5);
+}
+
+#prev{
+    left:15px;
+}
+
+#next{
+    right:15px;
+}
+
+.hidden{
+    display:none;
+}
+</style>
+
+<script>
+
+const JSON_URL="gallery.json";
+
+let galleryData=[];
+
+let currentSet=null;
+
+let currentIndex=0;
+
+async function loadGallery(){
+
+    const res=await fetch(JSON_URL+"?"+Date.now());
+
+    galleryData=await res.json();
+
+    renderGallery();
+
+}
+
+function renderGallery(){
+
+    const gallery=document.getElementById("gallery");
+
+    gallery.innerHTML="";
+
+    let search=document.getElementById("search").value.toLowerCase();
+
+    galleryData
+    .filter(set=>set.title.toLowerCase().includes(search))
+    .forEach(set=>{
+
+        const card=document.createElement("div");
+
+        card.className="card";
+
+        card.innerHTML=`
+
+        <img loading="lazy"
+        src="${set.thumbnail_urls[0]}">
+
+        <div class="cardTitle">
+        ${set.title}
+        <br>
+        ${set.thumbnail_urls.length} Images
+        </div>
+
+        `;
+
+        card.onclick=()=>openSet(set);
+
+        gallery.appendChild(card);
+
+    });
+
+}
+
+document.addEventListener("input",e=>{
+
+    if(e.target.id=="search")
+        renderGallery();
+
+});
+
+function shuffleGallery(){
+
+    galleryData.sort(()=>Math.random()-0.5);
+
+    renderGallery();
+
+}
+
+function openSet(set){
+
+    currentSet=set;
+
+    currentIndex=0;
+
+    document.getElementById("viewer").style.display="block";
+
+    showImage();
+
+}
+
+function closeViewer(){
+
+    document.getElementById("viewer").style.display="none";
+
+}
+
+function showImage(){
+
+    document.getElementById("viewerTitle").innerText=currentSet.title;
+
+    document.getElementById("counter").innerText=
+
+    (currentIndex+1)+" / "+currentSet.thumbnail_urls.length;
+
+    document.getElementById("mainImage").src=
+
+    currentSet.thumbnail_urls[currentIndex];
+
+}
+  function nextImage(){
+
+    if(currentIndex < currentSet.thumbnail_urls.length-1){
+
+        currentIndex++;
+
+        showImage();
+
+    }
+
+}
+
+function prevImage(){
+
+    if(currentIndex>0){
+
+        currentIndex--;
+
+        showImage();
+
+    }
+
+}
+
+function randomImage(){
+
+    currentIndex=Math.floor(
+        Math.random()*currentSet.thumbnail_urls.length
+    );
+
+    showImage();
+
+}
+
+let slideTimer=null;
+
+function toggleSlideshow(){
+
+    if(slideTimer){
+
+        clearInterval(slideTimer);
+
+        slideTimer=null;
+
+        return;
+
+    }
+
+    slideTimer=setInterval(()=>{
+
+        if(currentIndex>=currentSet.thumbnail_urls.length-1){
+
+            currentIndex=0;
+
+        }
+
+        else{
+
+            currentIndex++;
+
+        }
+
+        showImage();
+
+    },2500);
+
+}
+
+document.addEventListener("keydown",e=>{
+
+    if(document.getElementById("viewer").style.display!="block")
+        return;
+
+    switch(e.key){
+
+        case "ArrowRight":
+
+            nextImage();
+
+            break;
+
+        case "ArrowLeft":
+
+            prevImage();
+
+            break;
+
+        case "Escape":
+
+            closeViewer();
+
+            break;
+
+        case " ":
+
+            e.preventDefault();
+
+            nextImage();
+
+            break;
+
+        case "f":
+
+        case "F":
+
+            toggleFullscreen();
+
+            break;
+
+        case "r":
+
+        case "R":
+
+            randomImage();
+
+            break;
+
+    }
+
+});
+
+function toggleFullscreen(){
+
+    const elem=document.getElementById("viewer");
+
+    if(!document.fullscreenElement){
+
+        elem.requestFullscreen();
+
+    }
+
+    else{
+
+        document.exitFullscreen();
+
+    }
+
+}
+
+let startX=0;
+
+document.getElementById("imageContainer")
+.addEventListener("touchstart",e=>{
+
+    startX=e.changedTouches[0].screenX;
+
+});
+
+document.getElementById("imageContainer")
+.addEventListener("touchend",e=>{
+
+    let endX=e.changedTouches[0].screenX;
+
+    let diff=endX-startX;
+
+    if(Math.abs(diff)<60) return;
+
+    if(diff<0)
+        nextImage();
+    else
+        prevImage();
+
+});
+
+loadGallery();
+
+</script>
+
+</body>
+</html>
