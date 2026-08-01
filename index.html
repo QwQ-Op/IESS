@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>Photoset Gallery</title>
+<title>Photo Gallery</title>
 
 <style>
 
@@ -15,28 +14,40 @@
     box-sizing:border-box;
 }
 
-body{
-    background:#111;
-    color:white;
-    font-family:Arial,Helvetica,sans-serif;
+:root{
+    --bg:#101010;
+    --card:#1c1c1c;
+    --cardHover:#262626;
+    --text:#ffffff;
+    --muted:#9a9a9a;
+    --accent:#4ea3ff;
 }
 
-/* ===========================
-HEADER
-=========================== */
+body{
+
+    background:var(--bg);
+
+    color:var(--text);
+
+    font-family:Arial,Helvetica,sans-serif;
+
+}
+
+/* HEADER */
 
 header{
 
     position:sticky;
+
     top:0;
 
-    background:#1b1b1b;
+    z-index:100;
 
-    padding:15px;
+    background:#181818;
 
     border-bottom:1px solid #333;
 
-    z-index:100;
+    padding:18px;
 
 }
 
@@ -44,7 +55,7 @@ header h1{
 
     text-align:center;
 
-    font-size:26px;
+    margin-bottom:15px;
 
 }
 
@@ -52,50 +63,43 @@ header h1{
 
     width:100%;
 
-    margin-top:15px;
-
     padding:12px;
-
-    font-size:16px;
 
     border:none;
 
-    border-radius:8px;
+    outline:none;
 
-    background:#222;
+    border-radius:10px;
+
+    background:#242424;
 
     color:white;
 
-    outline:none;
+    font-size:16px;
 
 }
-
-/* ===========================
-STATS
-=========================== */
 
 #stats{
 
     text-align:center;
 
-    color:#aaa;
+    color:var(--muted);
 
-    padding:15px;
+    padding:16px;
 
 }
 
-/* ===========================
-GALLERY
-=========================== */
+/* MAIN GALLERY */
 
 #gallery{
 
     display:grid;
 
     grid-template-columns:
-        repeat(auto-fill,minmax(220px,1fr));
 
-    gap:18px;
+        repeat(auto-fill,minmax(230px,1fr));
+
+    gap:20px;
 
     padding:20px;
 
@@ -103,21 +107,23 @@ GALLERY
 
 .card{
 
-    background:#1d1d1d;
+    background:var(--card);
 
-    border-radius:12px;
+    border-radius:14px;
 
     overflow:hidden;
 
     cursor:pointer;
 
-    transition:.2s;
+    transition:.18s;
 
 }
 
 .card:hover{
 
-    transform:translateY(-4px);
+    transform:translateY(-5px);
+
+    background:var(--cardHover);
 
 }
 
@@ -125,7 +131,7 @@ GALLERY
 
     width:100%;
 
-    height:280px;
+    aspect-ratio:3/4;
 
     object-fit:cover;
 
@@ -141,7 +147,7 @@ GALLERY
 
 .cardTitle{
 
-    font-size:16px;
+    font-size:15px;
 
     font-weight:bold;
 
@@ -151,15 +157,13 @@ GALLERY
 
 .cardCount{
 
-    color:#999;
+    color:var(--muted);
 
     font-size:14px;
 
 }
 
-/* ===========================
-VIEWER
-=========================== */
+/* PHOTOSET GRID */
 
 #viewer{
 
@@ -169,21 +173,21 @@ VIEWER
 
 }
 
-#backButton{
-
-    background:#222;
-
-    color:white;
-
-    border:none;
+#back{
 
     padding:12px 18px;
 
+    border:none;
+
     border-radius:8px;
+
+    background:#333;
+
+    color:white;
 
     cursor:pointer;
 
-    margin-bottom:20px;
+    margin-bottom:18px;
 
 }
 
@@ -198,9 +202,10 @@ VIEWER
     display:grid;
 
     grid-template-columns:
+
         repeat(auto-fill,minmax(180px,1fr));
 
-    gap:15px;
+    gap:16px;
 
 }
 
@@ -208,27 +213,33 @@ VIEWER
 
     width:100%;
 
-    border-radius:8px;
+    border-radius:10px;
 
     cursor:pointer;
 
     display:block;
 
+    transition:.2s;
+
 }
 
-/* ===========================
-FULLSCREEN
-=========================== */
+#imageGrid img:hover{
+
+    transform:scale(1.03);
+
+}
+
+/* FULLSCREEN */
 
 #fullscreen{
+
+    display:none;
 
     position:fixed;
 
     inset:0;
 
-    background:rgba(0,0,0,.95);
-
-    display:none;
+    background:rgba(0,0,0,.96);
 
     justify-content:center;
 
@@ -240,9 +251,9 @@ FULLSCREEN
 
 #fullscreen img{
 
-    max-width:95vw;
+    max-width:96vw;
 
-    max-height:95vh;
+    max-height:96vh;
 
     object-fit:contain;
 
@@ -256,9 +267,9 @@ FULLSCREEN
 
     right:20px;
 
-    width:45px;
+    width:46px;
 
-    height:45px;
+    height:46px;
 
     border:none;
 
@@ -282,37 +293,92 @@ FULLSCREEN
 
     transform:translateY(-50%);
 
-    font-size:40px;
+    font-size:46px;
+
+    padding:18px;
 
     cursor:pointer;
 
     user-select:none;
 
-    padding:20px;
-
 }
 
 #prev{
 
-    left:10px;
+    left:8px;
 
 }
 
 #next{
 
-    right:10px;
+    right:8px;
+
+}
+
+#counter{
+
+    position:absolute;
+
+    bottom:25px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    color:#ddd;
+
+    font-size:15px;
+
+}
+
+.loading{
+
+    text-align:center;
+
+    padding:60px;
+
+    color:#aaa;
+
+}
+
+.error{
+
+    text-align:center;
+
+    color:#ff5555;
+
+    padding:60px;
+
+}
+
+@media(max-width:650px){
+
+    #gallery{
+
+        grid-template-columns:
+
+            repeat(auto-fill,minmax(160px,1fr));
+
+    }
+
+    #imageGrid{
+
+        grid-template-columns:
+
+            repeat(auto-fill,minmax(120px,1fr));
+
+    }
 
 }
 
 </style>
-
 </head>
 
 <body>
 
 <header>
 
-<h1>📷 Photoset Gallery</h1>
+<h1>📷 Photo Gallery</h1>
 
 <input
 id="search"
@@ -323,11 +389,19 @@ placeholder="Search photosets...">
 
 <div id="stats"></div>
 
-<div id="gallery"></div>
+<div id="gallery">
+
+<div class="loading">
+
+Loading gallery...
+
+</div>
+
+</div>
 
 <div id="viewer">
 
-<button id="backButton">
+<button id="back">
 
 ← Back
 
@@ -341,397 +415,366 @@ placeholder="Search photosets...">
 
 <div id="fullscreen">
 
-<button id="close">✕</button>
+<button id="close">
 
-<div id="prev">❮</div>
+✕
+
+</button>
+
+<div id="prev">
+
+❮
+
+</div>
 
 <img id="fullscreenImage">
 
-<div id="next">❯</div>
+<div id="next">
+
+❯
+
+</div>
+
+<div id="counter"></div>
 
 </div>
 
 <script>
 
-/* ===========================
-GLOBAL VARIABLES
-=========================== */
+const JSON_FILE="gallery.json";
 
-let photosets=[];
+let gallery=[];
 
 let filtered=[];
 
 let currentSet=null;
 
-let currentImageIndex=0;
+let currentImage=0;
 
-let scrollPosition=0;
+let startX=0;
 
-/* ===========================
-ELEMENTS
-=========================== */
+const galleryDiv=document.getElementById("gallery");
+const stats=document.getElementById("stats");
+const search=document.getElementById("search");
+const viewer=document.getElementById("viewer");
+const imageGrid=document.getElementById("imageGrid");
+const viewerTitle=document.getElementById("viewerTitle");
 
-const gallery=
-document.getElementById("gallery");
-
-const viewer=
-document.getElementById("viewer");
-
-const imageGrid=
-document.getElementById("imageGrid");
-
-const viewerTitle=
-document.getElementById("viewerTitle");
-
-const stats=
-document.getElementById("stats");
-
-const search=
-document.getElementById("search");
-
-const fullscreen=
-document.getElementById("fullscreen");
-
-const fullscreenImage=
-document.getElementById("fullscreenImage");
-
-/* ===========================
-LOAD JSON
-=========================== */
-
-async function loadPhotosets(){
-
-    const response=
-    await fetch("photosets.json");
-
-    photosets=
-    await response.json();
-
-    filtered=[...photosets];
-
-    renderGallery();
-
-}
-
-loadPhotosets();
-
-</script>
-
-</body>
-</html>
-<style>
-*{
-    box-sizing:border-box;
-}
-
-body{
-    margin:0;
-    background:#111;
-    color:white;
-    font-family:Arial,Helvetica,sans-serif;
-}
-
-header{
-    padding:15px;
-    text-align:center;
-    background:#1b1b1b;
-}
-
-#toolbar{
-    display:flex;
-    gap:10px;
-    padding:15px;
-    justify-content:center;
-    flex-wrap:wrap;
-}
-
-input{
-    background:#222;
-    color:white;
-    border:none;
-    padding:10px;
-    border-radius:8px;
-}
-
-button{
-    padding:10px 16px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    background:#333;
-    color:white;
-}
-
-button:hover{
-    background:#555;
-}
-
-#gallery{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-    gap:18px;
-    padding:20px;
-}
-
-.card{
-    background:#1b1b1b;
-    border-radius:12px;
-    overflow:hidden;
-    cursor:pointer;
-    transition:.2s;
-}
-
-.card:hover{
-    transform:translateY(-4px);
-}
-
-.card img{
-    width:100%;
-    aspect-ratio:3/4;
-    object-fit:cover;
-}
-
-.cardTitle{
-    padding:10px;
-    text-align:center;
-    font-size:14px;
-}
-
-#viewer{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:#000;
-    z-index:99;
-}
-
-#viewerTop{
-    display:flex;
-    justify-content:space-between;
-    padding:15px;
-    background:#111;
-}
-
-#viewerTitle{
-    font-size:18px;
-}
-
-#counter{
-    color:#bbb;
-}
-
-#imageContainer{
-    position:relative;
-    height:calc(100vh - 70px);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    overflow:auto;
-}
-
-#mainImage{
-    max-width:100%;
-    max-height:100%;
-}
-
-#prev,#next{
-    position:absolute;
-    top:50%;
-    transform:translateY(-50%);
-    width:55px;
-    height:55px;
-    border-radius:50%;
-    font-size:24px;
-    background:rgba(0,0,0,.5);
-}
-
-#prev{
-    left:15px;
-}
-
-#next{
-    right:15px;
-}
-
-.hidden{
-    display:none;
-}
-</style>
-
-<script>
-
-const JSON_URL="gallery.json";
-
-let galleryData=[];
-
-let currentSet=null;
-
-let currentIndex=0;
+const fullscreen=document.getElementById("fullscreen");
+const fullscreenImage=document.getElementById("fullscreenImage");
+const counter=document.getElementById("counter");
+    /* ===========================================
+   LOAD JSON
+=========================================== */
 
 async function loadGallery(){
 
-    const res=await fetch(JSON_URL+"?"+Date.now());
+    try{
 
-    galleryData=await res.json();
+        const response=await fetch(JSON_FILE+"?"+Date.now());
 
-    renderGallery();
+        if(!response.ok){
 
-}
+            throw new Error("Unable to load gallery.json");
 
-function renderGallery(){
+        }
 
-    const gallery=document.getElementById("gallery");
+        gallery=await response.json();
 
-    gallery.innerHTML="";
+        filtered=[...gallery];
 
-    let search=document.getElementById("search").value.toLowerCase();
+        renderGallery();
 
-    galleryData
-    .filter(set=>set.title.toLowerCase().includes(search))
-    .forEach(set=>{
+    }
 
-        const card=document.createElement("div");
+    catch(err){
 
-        card.className="card";
+        galleryDiv.innerHTML=`
 
-        card.innerHTML=`
+        <div class="error">
 
-        <img loading="lazy"
-        src="${set.thumbnail_urls[0]}">
+        Failed to load gallery.json
 
-        <div class="cardTitle">
-        ${set.title}
-        <br>
-        ${set.thumbnail_urls.length} Images
+        <br><br>
+
+        ${err.message}
+
         </div>
 
         `;
 
-        card.onclick=()=>openSet(set);
-
-        gallery.appendChild(card);
-
-    });
-
-}
-
-document.addEventListener("input",e=>{
-
-    if(e.target.id=="search")
-        renderGallery();
-
-});
-
-function shuffleGallery(){
-
-    galleryData.sort(()=>Math.random()-0.5);
-
-    renderGallery();
-
-}
-
-function openSet(set){
-
-    currentSet=set;
-
-    currentIndex=0;
-
-    document.getElementById("viewer").style.display="block";
-
-    showImage();
-
-}
-
-function closeViewer(){
-
-    document.getElementById("viewer").style.display="none";
-
-}
-
-function showImage(){
-
-    document.getElementById("viewerTitle").innerText=currentSet.title;
-
-    document.getElementById("counter").innerText=
-
-    (currentIndex+1)+" / "+currentSet.thumbnail_urls.length;
-
-    document.getElementById("mainImage").src=
-
-    currentSet.thumbnail_urls[currentIndex];
-
-}
-  function nextImage(){
-
-    if(currentIndex < currentSet.thumbnail_urls.length-1){
-
-        currentIndex++;
-
-        showImage();
-
     }
 
 }
 
-function prevImage(){
+/* ===========================================
+   RENDER GALLERY
+=========================================== */
 
-    if(currentIndex>0){
+function renderGallery(){
 
-        currentIndex--;
+    galleryDiv.innerHTML="";
 
-        showImage();
+    stats.textContent=`${filtered.length} Photosets`;
 
-    }
+    if(filtered.length===0){
 
-}
+        galleryDiv.innerHTML=`
 
-function randomImage(){
+        <div class="loading">
 
-    currentIndex=Math.floor(
-        Math.random()*currentSet.thumbnail_urls.length
-    );
+        No matching photosets.
 
-    showImage();
+        </div>
 
-}
-
-let slideTimer=null;
-
-function toggleSlideshow(){
-
-    if(slideTimer){
-
-        clearInterval(slideTimer);
-
-        slideTimer=null;
+        `;
 
         return;
 
     }
 
-    slideTimer=setInterval(()=>{
+    filtered.forEach(set=>{
 
-        if(currentIndex>=currentSet.thumbnail_urls.length-1){
+        const card=document.createElement("div");
 
-            currentIndex=0;
+        card.className="card";
 
-        }
+        const cover=
 
-        else{
+            set.thumbnail_urls &&
 
-            currentIndex++;
+            set.thumbnail_urls.length
 
-        }
+            ? set.thumbnail_urls[0]
 
-        showImage();
+            : "";
 
-    },2500);
+        card.innerHTML=`
+
+            <img
+
+                loading="lazy"
+
+                src="${cover}"
+
+                alt="${set.title}"
+
+            >
+
+            <div class="cardInfo">
+
+                <div class="cardTitle">
+
+                    ${set.title}
+
+                </div>
+
+                <div class="cardCount">
+
+                    ${set.thumbnail_urls.length} Images
+
+                </div>
+
+            </div>
+
+        `;
+
+        card.onclick=()=>openPhotoset(set);
+
+        galleryDiv.appendChild(card);
+
+    });
 
 }
 
+/* ===========================================
+   SEARCH
+=========================================== */
+
+search.addEventListener("input",()=>{
+
+    const text=
+
+        search.value
+
+        .trim()
+
+        .toLowerCase();
+
+    filtered=
+
+        gallery.filter(set=>
+
+            set.title
+
+            .toLowerCase()
+
+            .includes(text)
+
+        );
+
+    renderGallery();
+
+});
+
+/* ===========================================
+   OPEN PHOTOSET
+=========================================== */
+
+function openPhotoset(set){
+
+    currentSet=set;
+
+    galleryDiv.style.display="none";
+
+    stats.style.display="none";
+
+    viewer.style.display="block";
+
+    viewerTitle.textContent=set.title;
+
+    imageGrid.innerHTML="";
+
+    set.thumbnail_urls.forEach((url,index)=>{
+
+        const img=document.createElement("img");
+
+        img.loading="lazy";
+
+        img.src=url;
+
+        img.onclick=()=>{
+
+            currentImage=index;
+
+            openFullscreen();
+
+        };
+
+        imageGrid.appendChild(img);
+
+    });
+
+}
+
+/* ===========================================
+   BACK BUTTON
+=========================================== */
+
+document
+
+.getElementById("back")
+
+.onclick=()=>{
+
+    viewer.style.display="none";
+
+    galleryDiv.style.display="grid";
+
+    stats.style.display="block";
+
+};
+
+/* ===========================================
+   FULLSCREEN
+=========================================== */
+
+function openFullscreen(){
+
+    fullscreen.style.display="flex";
+
+    showImage();
+
+}
+
+function closeFullscreen(){
+
+    fullscreen.style.display="none";
+
+}
+
+document
+
+.getElementById("close")
+
+.onclick=closeFullscreen;
+    /* ===========================================
+   IMAGE VIEWER
+=========================================== */
+
+function showImage(){
+
+    if(!currentSet) return;
+
+    fullscreenImage.src=
+
+        currentSet.thumbnail_urls[currentImage];
+
+    counter.textContent=
+
+        (currentImage+1)
+
+        +" / "+
+
+        currentSet.thumbnail_urls.length;
+
+}
+
+/* ===========================================
+   NEXT / PREVIOUS
+=========================================== */
+
+function nextImage(){
+
+    if(!currentSet) return;
+
+    currentImage++;
+
+    if(currentImage>=currentSet.thumbnail_urls.length){
+
+        currentImage=0;
+
+    }
+
+    showImage();
+
+}
+
+function previousImage(){
+
+    if(!currentSet) return;
+
+    currentImage--;
+
+    if(currentImage<0){
+
+        currentImage=currentSet.thumbnail_urls.length-1;
+
+    }
+
+    showImage();
+
+}
+
+document
+
+.getElementById("next")
+
+.onclick=nextImage;
+
+document
+
+.getElementById("prev")
+
+.onclick=previousImage;
+
+/* ===========================================
+   KEYBOARD CONTROLS
+=========================================== */
+
 document.addEventListener("keydown",e=>{
 
-    if(document.getElementById("viewer").style.display!="block")
+    if(fullscreen.style.display!=="flex")
         return;
 
     switch(e.key){
@@ -744,37 +787,31 @@ document.addEventListener("keydown",e=>{
 
         case "ArrowLeft":
 
-            prevImage();
+            previousImage();
 
             break;
 
         case "Escape":
 
-            closeViewer();
+            closeFullscreen();
 
             break;
 
-        case " ":
+        case "Home":
 
-            e.preventDefault();
+            currentImage=0;
 
-            nextImage();
-
-            break;
-
-        case "f":
-
-        case "F":
-
-            toggleFullscreen();
+            showImage();
 
             break;
 
-        case "r":
+        case "End":
 
-        case "R":
+            currentImage=
 
-            randomImage();
+                currentSet.thumbnail_urls.length-1;
+
+            showImage();
 
             break;
 
@@ -782,13 +819,63 @@ document.addEventListener("keydown",e=>{
 
 });
 
-function toggleFullscreen(){
+/* ===========================================
+   SWIPE SUPPORT
+=========================================== */
 
-    const elem=document.getElementById("viewer");
+fullscreen.addEventListener("touchstart",e=>{
+
+    startX=e.changedTouches[0].clientX;
+
+});
+
+fullscreen.addEventListener("touchend",e=>{
+
+    const endX=
+
+        e.changedTouches[0].clientX;
+
+    const diff=endX-startX;
+
+    if(Math.abs(diff)<60) return;
+
+    if(diff<0)
+
+        nextImage();
+
+    else
+
+        previousImage();
+
+});
+
+/* ===========================================
+   MOUSE WHEEL NAVIGATION
+=========================================== */
+
+fullscreen.addEventListener("wheel",e=>{
+
+    e.preventDefault();
+
+    if(e.deltaY>0)
+
+        nextImage();
+
+    else
+
+        previousImage();
+
+},{passive:false});
+
+/* ===========================================
+   DOUBLE CLICK = FULLSCREEN API
+=========================================== */
+
+fullscreenImage.ondblclick=()=>{
 
     if(!document.fullscreenElement){
 
-        elem.requestFullscreen();
+        fullscreen.requestFullscreen();
 
     }
 
@@ -798,32 +885,153 @@ function toggleFullscreen(){
 
     }
 
+};
+
+/* ===========================================
+   OPTIONAL SLIDESHOW
+=========================================== */
+
+let slideshow=null;
+
+function toggleSlideshow(){
+
+    if(slideshow){
+
+        clearInterval(slideshow);
+
+        slideshow=null;
+
+        return;
+
+    }
+
+    slideshow=setInterval(()=>{
+
+        nextImage();
+
+    },2500);
+
 }
 
-let startX=0;
+document.addEventListener("keydown",e=>{
 
-document.getElementById("imageContainer")
-.addEventListener("touchstart",e=>{
+    if(fullscreen.style.display!=="flex")
+        return;
 
-    startX=e.changedTouches[0].screenX;
+    if(e.key===" "){
+
+        e.preventDefault();
+
+        toggleSlideshow();
+
+    }
+
+});
+
+    /* ===========================================
+   CLOSE WHEN CLICKING BACKGROUND
+=========================================== */
+
+fullscreen.addEventListener("click",e=>{
+
+    if(e.target===fullscreen){
+
+        closeFullscreen();
+
+    }
 
 });
 
-document.getElementById("imageContainer")
-.addEventListener("touchend",e=>{
+/* ===========================================
+   PRELOAD NEIGHBORING IMAGES
+=========================================== */
 
-    let endX=e.changedTouches[0].screenX;
+function preloadNearbyImages(){
 
-    let diff=endX-startX;
+    if(!currentSet) return;
 
-    if(Math.abs(diff)<60) return;
+    const total=currentSet.thumbnail_urls.length;
 
-    if(diff<0)
-        nextImage();
-    else
-        prevImage();
+    const next=(currentImage+1)%total;
+    const prev=(currentImage-1+total)%total;
 
-});
+    const img1=new Image();
+    img1.src=currentSet.thumbnail_urls[next];
+
+    const img2=new Image();
+    img2.src=currentSet.thumbnail_urls[prev];
+
+}
+
+const originalShowImage=showImage;
+
+showImage=function(){
+
+    originalShowImage();
+
+    preloadNearbyImages();
+
+};
+
+/* ===========================================
+   OPTIONAL: OPEN ORIGINAL PHOTOSET
+=========================================== */
+
+viewerTitle.style.cursor="pointer";
+
+viewerTitle.title="Open original photoset";
+
+viewerTitle.onclick=()=>{
+
+    if(currentSet && currentSet.photoset_url){
+
+        window.open(currentSet.photoset_url,"_blank");
+
+    }
+
+};
+
+/* ===========================================
+   UPDATE STATS
+=========================================== */
+
+function updateStats(){
+
+    let imageCount=0;
+
+    gallery.forEach(set=>{
+
+        imageCount+=set.thumbnail_urls.length;
+
+    });
+
+    stats.textContent=
+
+        gallery.length+
+
+        " Photosets • "+
+
+        imageCount+
+
+        " Images";
+
+}
+
+/* Override renderGallery so stats stay updated */
+
+const originalRenderGallery=renderGallery;
+
+renderGallery=function(){
+
+    originalRenderGallery();
+
+    updateStats();
+
+};
+
+/* ===========================================
+   START
+=========================================== */
 
 loadGallery();
 
